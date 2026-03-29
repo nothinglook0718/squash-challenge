@@ -512,7 +512,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
           <div class="fg"><label class="fl">日期</label><input class="fi" type="date" id="ev-date"></div>
           <div class="fg"><label class="fl">時間</label><input class="fi" type="time" id="ev-time"></div>
           <div class="fg"><label class="fl">地點</label><input class="fi" type="text" placeholder="例：天母運動中心 壁球場A" id="ev-location"></div>
-          <button class="btn btn-gold btn-sm" onclick="createEvent()" style="width:100%;justify-content:center">＋ 建立場次</button>
+          <button class="btn btn-gold btn-sm" onclick="doCreateEvent()" style="width:100%;justify-content:center">＋ 建立場次</button>
           <div class="divider"></div>
           <div class="panel-title" style="margin-bottom:.75rem">📋 現有場次</div>
           <ul class="ev-list" id="judge-events-list">
@@ -867,7 +867,7 @@ async function loadJudgeData() {
   }
 }
 
-async function createEvent() {
+async function doCreateEvent() {
   const name = document.getElementById('ev-name').value.trim();
   const date = document.getElementById('ev-date').value;
   const time = document.getElementById('ev-time').value;
