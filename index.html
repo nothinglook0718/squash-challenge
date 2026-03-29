@@ -255,7 +255,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
       </div>
       <div class="video-wrap">
         <div class="video-ratio">
-          <iframe id="hero-video" src="" style="display:none"></iframe>
+          <iframe id="hero-video" src="" style="display:none" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           <div class="play-overlay" id="play-overlay" onclick="playVideo()">
             <div style="text-align:center">
               <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
@@ -980,14 +980,13 @@ async function submitScore() {
 // 把 YOUR_YOUTUBE_VIDEO_ID 換成實際的 YouTube 影片 ID
 // ══════════════════════════════════════════════════════
 function playVideo() {
-  const videoId = 'YOUR_YOUTUBE_VIDEO_ID';
-  if (videoId === 'YOUR_YOUTUBE_VIDEO_ID') {
-    toast('請在程式碼中把 YOUR_YOUTUBE_VIDEO_ID 換成真實影片 ID');
-    return;
-  }
-  document.getElementById('hero-video').src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
-  document.getElementById('hero-video').style.display = 'block';
-  document.getElementById('play-overlay').style.display = 'none';
+  const videoId = '3kQblNZz6ag';
+  const iframe = document.getElementById('hero-video');
+  const overlay = document.getElementById('play-overlay');
+  iframe.src = 'https://www.youtube.com/embed/' + videoId
+    + '?autoplay=1&rel=0&modestbranding=1';
+  iframe.style.display = 'block';
+  overlay.style.display = 'none';
 }
 
 // ══════════════════════════════════════════════════════
