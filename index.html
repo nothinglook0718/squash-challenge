@@ -45,11 +45,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
 .grid-bg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 70% 80% at 50% 50%,black 0%,transparent 100%)}
 .hero-inner{position:relative;z-index:1;text-align:center;max-width:860px;width:100%}
 .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,184,0,.1);border:1px solid var(--border-gold);color:var(--gold);padding:.35rem 1rem;border-radius:100px;font-family:var(--fc);font-size:.8rem;font-weight:600;letter-spacing:2px;margin-bottom:1.5rem;animation:up .6s ease both}
-.hero-title{font-family:var(--fd);font-size:clamp(3rem,8vw,6.5rem);line-height:.9;letter-spacing:3px;margin-bottom:1rem;animation:up .6s .1s ease both}
+.hero-title{font-family:var(--fd);font-size:clamp(2.4rem,5vw,4.8rem);line-height:1;letter-spacing:3px;margin-bottom:.85rem;animation:up .6s .1s ease both}
 .hero-title .gold{color:var(--gold)}
 .hero-title .dim{color:var(--muted)}
-.hero-sub{font-family:var(--fc);font-size:1.05rem;font-weight:300;color:var(--muted);letter-spacing:1px;margin-bottom:2.5rem;line-height:1.7;animation:up .6s .2s ease both}
-.hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:up .6s .3s ease both;margin-bottom:3rem}
+.hero-sub{font-family:var(--fc);font-size:1rem;font-weight:300;color:var(--muted);letter-spacing:.5px;margin-bottom:1.75rem;line-height:1.7;animation:up .6s .2s ease both}
+.hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:up .6s .3s ease both;margin-bottom:1.75rem}
 @keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
 /* BUTTONS */
@@ -126,6 +126,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
 .ev-title{font-family:var(--fc);font-size:1.3rem;font-weight:700;margin-bottom:.25rem}
 .ev-meta{font-size:.85rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.9}
 .ev-footer{display:flex;align-items:center;justify-content:space-between}
+
+/* SCORE LOOKUP */
+.score-lookup{display:flex;align-items:center;gap:.6rem;background:rgba(255,184,0,.05);border:1px solid var(--border-gold);border-radius:10px;padding:.65rem 1rem;margin-top:.6rem;text-decoration:none;transition:background .2s}
+.score-lookup:hover{background:rgba(255,184,0,.1)}
+.score-lookup-icon{width:28px;height:28px;border-radius:8px;background:rgba(255,184,0,.15);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.score-lookup-text{flex:1}
+.score-lookup-title{font-family:var(--fc);font-size:.85rem;font-weight:700;color:var(--gold);letter-spacing:.5px}
+.score-lookup-sub{font-family:var(--fc);font-size:.75rem;color:var(--muted);letter-spacing:.5px;margin-top:.1rem}
+.score-lookup-arrow{font-size:.8rem;color:var(--gold);opacity:.7}
 
 /* FORM */
 .reg-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
@@ -253,17 +262,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
         <button class="btn btn-gold" onclick="showPage('register',document.querySelector('.nav-links a:nth-child(4)'))">立即報名 →</button>
         <button class="btn btn-outline" onclick="showPage('rules',document.querySelector('.nav-links a:nth-child(2)'))">了解規則</button>
       </div>
-      <div class="video-wrap">
-        <div class="video-ratio">
-          <iframe id="hero-video" src="" style="display:none" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-          <div class="play-overlay" id="play-overlay" onclick="playVideo()">
-            <div style="text-align:center">
-              <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-              <p style="margin-top:1rem;font-family:var(--fc);color:var(--muted);font-size:.85rem;letter-spacing:1px">點擊播放活動宣傳影片</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <a href="https://www.youtube.com/shorts/9FRSKwdgNlI" target="_blank"
+         style="display:inline-flex;align-items:center;gap:.65rem;border:1px solid rgba(255,255,255,.1);color:var(--muted);padding:.5rem 1.25rem .5rem .5rem;border-radius:100px;font-family:var(--fc);font-size:.88rem;font-weight:600;letter-spacing:.5px;cursor:pointer;transition:all .25s;text-decoration:none;margin-top:1rem"
+         onmouseover="this.style.borderColor='var(--border-gold)';this.style.color='var(--gold)';this.style.background='rgba(255,184,0,.06)'"
+         onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='var(--muted)';this.style.background='transparent'">
+        <span style="width:34px;height:34px;border-radius:50%;background:#FF0000;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" style="margin-left:3px;fill:white"><path d="M8 5v14l11-7z"/></svg>
+        </span>
+        觀看活動宣傳影片（YouTube Shorts）
+      </a>
     </div>
   </div>
   <div class="stats-bar">
@@ -290,8 +297,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
     <div class="sec-title"><span class="accent"></span>比賽<span class="gold">規則</span></div>
     <p class="sec-sub">3分鐘極限控球挑戰 — 完整規則說明</p>
     <div class="grid-4" style="margin-bottom:3rem">
-      <div class="card"><div class="card-label">通用規則 01</div><div class="card-title" style="margin-bottom:.5rem">擊中主牆即計分</div><p class="card-desc">不限任何招式，擊中主牆後只要球最終落入/擊中指定區塊就算分！</p></div>
-      <div class="card"><div class="card-label">通用規則 02</div><div class="card-title" style="margin-bottom:.5rem">壓線即得分</div><p class="card-desc">只要球的落點壓到指定區塊的邊線，皆判定為得分。邊線上算內！</p></div>
+      <div class="card"><div class="card-label">通用規則 01</div><div class="card-title" style="margin-bottom:.5rem">擊中主牆即計分</div><p class="card-desc">選手站在T點後(短線)，擊中主牆後只要球最終落入/擊中指定區塊就算分！</p></div>
+      <div class="card"><div class="card-label">通用規則 02</div><div class="card-title" style="margin-bottom:.5rem">壓線也能得分</div><p class="card-desc">只要球的落點壓到指定區塊的邊線，皆判定為得分。</p></div>
       <div class="card"><div class="card-label">通用規則 03</div><div class="card-title" style="margin-bottom:.5rem">指定打法限制</div><p class="card-desc">測驗正手時，僅限「正手擊球」得分；測驗反手時，僅限「反手擊球」得分。兩者分開計算。</p></div>
       <div class="card"><div class="card-label">通用規則 04</div><div class="card-title" style="margin-bottom:.5rem">越級挑戰加分</div><p class="card-desc">選手可越級挑戰，每高報一組就多加10分。如：初階組挑戰高階組，起始分數為20分。</p></div>
     </div>
@@ -311,7 +318,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
         <p class="card-desc">選手可在球場內任意位置「平放」一把球拍作為標靶：</p>
         <ul style="margin-top:.75rem;padding-left:1.2rem;font-size:.9rem;color:var(--muted);line-height:2.2">
           <li><strong style="color:#00E676">初階組</strong>：擊中球拍「任一處」（含拍框與拍柄）即加分。</li>
-          <li><strong style="color:var(--gold)">中、高、神獸組</strong>：需精準擊中球拍「線床（拍面）」才算數。</li>
+          <li><strong style="color:var(--gold)">中、高、神獸組</strong>：需精準擊中球拍「線（拍面）」才算數。</li>
         </ul>
       </div>
     </div>
@@ -361,8 +368,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
           <div class="fg"><label class="fl">姓名</label><input class="fi" type="text" placeholder="請輸入真實姓名" id="reg-name"></div>
           <div class="fg"><label class="fl">聯絡電話</label><input class="fi" type="tel" placeholder="09XX-XXX-XXX" id="reg-phone"></div>
           <div class="fg">
-            <label class="fl">目前積分（請如實填寫）</label>
+            <label class="fl" style="display:flex;align-items:center;justify-content:space-between">
+              <span>目前積分（請如實填寫）</span>
+              <a href="https://playpulse.io/zh-TW/federation/taiwansquash/" target="_blank"
+                 style="font-family:var(--fc);font-size:.72rem;font-weight:600;color:var(--gold);letter-spacing:.5px;text-decoration:none;opacity:.8;display:flex;align-items:center;gap:.25rem">
+                不知道積分？查詢 →
+              </a>
+            </label>
             <input class="fi" type="number" placeholder="例：750" id="reg-score" oninput="updateGroupHint(this.value)">
+            <a href="https://playpulse.io/zh-TW/federation/taiwansquash/" target="_blank" class="score-lookup">
+              <span class="score-lookup-icon">🏆</span>
+              <span class="score-lookup-text">
+                <div class="score-lookup-title">台灣壁球積分查詢</div>
+                <div class="score-lookup-sub">playpulse.io — 台灣壁球聯盟官方積分系統</div>
+              </span>
+              <span class="score-lookup-arrow">↗</span>
+            </a>
             <div class="group-hint" id="group-hint" style="display:none">
               您的積分組別：<strong id="group-result" style="font-size:1.05rem">—</strong>
               <div id="group-task-hint" style="margin-top:.4rem;font-size:.82rem;line-height:1.6"></div>
@@ -387,12 +408,32 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
       </div>
       <div>
         <div class="info-card">
-          <div style="font-family:var(--fc);font-size:.8rem;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:1rem">HOW IT WORKS</div>
+          <div style="font-family:var(--fc);font-size:.8rem;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:1.25rem">HOW IT WORKS</div>
           <div class="info-step"><div class="step-n">1</div><div class="step-c"><h4>輸入 Gmail</h4><p>輸入您的 Gmail 帳號，作為報名識別。</p></div></div>
           <div class="info-step"><div class="step-n">2</div><div class="step-c"><h4>填寫基本資料</h4><p>輸入姓名、電話與目前積分。積分請如實填寫，系統依此分組。</p></div></div>
           <div class="info-step"><div class="step-n">3</div><div class="step-c"><h4>選擇場次</h4><p>選擇您方便的活動場次，可報名多場，每場需個別報名。</p></div></div>
           <div class="info-step"><div class="step-n">4</div><div class="step-c"><h4>比賽當天現場繳費</h4><p>向裁判報到後繳費，即可開始挑戰！</p></div></div>
           <div class="divider"></div>
+
+          <!-- 積分查詢區塊 -->
+          <div style="margin-bottom:1.25rem">
+            <div style="font-family:var(--fc);font-size:.8rem;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:.75rem">積分查詢</div>
+            <p style="font-size:.85rem;color:var(--muted);line-height:1.7;margin-bottom:.75rem">
+              壁球積分來自台灣壁球聯盟的 PlayPulse 系統。如果你不確定自己的積分，可以點下方連結查詢。
+            </p>
+            <a href="https://playpulse.io/zh-TW/federation/taiwansquash/" target="_blank"
+               style="display:flex;align-items:center;gap:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1rem;text-decoration:none;transition:border-color .2s;color:inherit"
+               onmouseover="this.style.borderColor='var(--border-gold)'"
+               onmouseout="this.style.borderColor='var(--border)'">
+              <div style="width:40px;height:40px;border-radius:10px;background:rgba(255,184,0,.1);border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🏆</div>
+              <div style="flex:1">
+                <div style="font-family:var(--fc);font-size:.95rem;font-weight:700;color:var(--gold)">PlayPulse 積分查詢</div>
+                <div style="font-family:var(--fc);font-size:.75rem;color:var(--muted);margin-top:.2rem">台灣壁球聯盟官方積分系統</div>
+              </div>
+              <div style="font-size:.85rem;color:var(--gold)">↗</div>
+            </a>
+          </div>
+
           <div style="background:rgba(255,184,0,.06);border:1px solid var(--border-gold);border-radius:10px;padding:1rem">
             <p style="font-size:.85rem;line-height:1.8;color:var(--muted)">📌 <strong style="color:var(--text)">注意事項</strong><br>• 積分以報名當下填寫為準<br>• 積分不實可能影響排名公平性<br>• 無限重刷：每次需重新繳費<br>• 最終排名以裁判記錄為準</p>
           </div>
@@ -979,15 +1020,7 @@ async function submitScore() {
 // 影片
 // 把 YOUR_YOUTUBE_VIDEO_ID 換成實際的 YouTube 影片 ID
 // ══════════════════════════════════════════════════════
-function playVideo() {
-  const videoId = 'zSO_O2_0XqE';
-  const iframe = document.getElementById('hero-video');
-  const overlay = document.getElementById('play-overlay');
-  iframe.src = 'https://www.youtube.com/embed/' + videoId
-    + '?autoplay=1&rel=0&modestbranding=1';
-  iframe.style.display = 'block';
-  overlay.style.display = 'none';
-}
+// 影片改為 YouTube 直連
 
 // ══════════════════════════════════════════════════════
 // Toast 提示
