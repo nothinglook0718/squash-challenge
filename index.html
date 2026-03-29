@@ -393,14 +393,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
           <div class="divider"></div>
           <div class="form-title">🎯 選擇活動場次</div>
           <div class="fg"><label class="fl">活動場次</label><select class="fs" id="reg-event"><option value="">— 載入中 —</option></select></div>
-          <div class="fg">
-            <label class="fl">越級挑戰（可選）</label>
-            <select class="fs" id="reg-override">
-              <option value="0">不越級，依積分分配</option>
-              <option value="1">越一級（+10分基礎分）</option>
-              <option value="2">越二級（+20分基礎分）</option>
-              <option value="3">越三級（+30分基礎分）</option>
+          <div class="fg" id="override-wrap" style="display:none">
+            <label class="fl">挑戰組別選擇</label>
+            <select class="fs" id="reg-override" onchange="updateChallengHint()">
+              <!-- 動態產生，由 updateGroupHint() 呼叫 -->
             </select>
+            <div id="challenge-hint" style="display:none;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-top:.6rem;font-size:.85rem;line-height:1.75;color:var(--muted)"></div>
+            <div style="font-size:.75rem;color:var(--muted);margin-top:.5rem;font-family:var(--fc);opacity:.7">
+              💡 越級挑戰：每高一個組別起始加10分，裁判記錄最終得分時已含此加分
+            </div>
           </div>
           <button class="btn btn-gold" id="reg-btn" style="width:100%;justify-content:center;margin-top:.5rem" onclick="submitReg()">確認報名 →</button>
           <p style="font-size:.8rem;color:var(--muted);text-align:center;margin-top:.75rem">報名後請於比賽當天現場繳費，每次挑戰費用請洽主辦單位</p>
@@ -512,7 +513,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
           <div class="fg"><label class="fl">日期</label><input class="fi" type="date" id="ev-date"></div>
           <div class="fg"><label class="fl">時間</label><input class="fi" type="time" id="ev-time"></div>
           <div class="fg"><label class="fl">地點</label><input class="fi" type="text" placeholder="例：天母運動中心 壁球場A" id="ev-location"></div>
-          <button class="btn btn-gold btn-sm" onclick="doCreateEvent()" style="width:100%;justify-content:center">＋ 建立場次</button>
+          <button class="btn btn-gold btn-sm" onclick="createEvent()" style="width:100%;justify-content:center">＋ 建立場次</button>
           <div class="divider"></div>
           <div class="panel-title" style="margin-bottom:.75rem">📋 現有場次</div>
           <ul class="ev-list" id="judge-events-list">
@@ -713,10 +714,26 @@ const GROUP_TASKS = {
 };
 const GROUP_COLORS = { '初階組':'#00E676', '中階組':'#FFB800', '高階組':'#FF4500', '神獸組':'#C864FF' };
 
+const GROUP_NAMES  = ['初階組','中階組','高階組','神獸組'];
+const GROUP_LABELS = {
+  '初階組': '初階組（積分 0–500）',
+  '中階組': '中階組（積分 501–1000）',
+  '高階組': '高階組（積分 1001–1449）',
+  '神獸組': '神獸組（積分 1450 以上）'
+};
+
 function updateGroupHint(val) {
   const s = parseInt(val);
   const hint = document.getElementById('group-hint');
-  if (!s && s !== 0) { hint.style.display = 'none'; return; }
+  const overrideWrap = document.getElementById('override-wrap');
+  const overrideSel  = document.getElementById('reg-override');
+
+  if (!s && s !== 0) {
+    hint.style.display = 'none';
+    if (overrideWrap) overrideWrap.style.display = 'none';
+    return;
+  }
+
   hint.style.display = 'block';
   const g = groupFromScore(s);
   const el = document.getElementById('group-result');
@@ -724,6 +741,53 @@ function updateGroupHint(val) {
   el.style.color = GROUP_COLORS[g] || 'var(--gold)';
   const taskEl = document.getElementById('group-task-hint');
   if (taskEl) taskEl.textContent = GROUP_TASKS[g] || '';
+
+  // 重建越級選單：只顯示比自己高的組別
+  const myIdx = GROUP_NAMES.indexOf(g);
+  const higherGroups = GROUP_NAMES.slice(myIdx + 1); // 比自己高的組別
+
+  if (!overrideWrap || !overrideSel) return;
+
+  if (higherGroups.length === 0) {
+    // 神獸組：已是最高，隱藏選單
+    overrideWrap.style.display = 'none';
+    overrideSel.innerHTML = `<option value="${g}:0">${GROUP_LABELS[g]}（已是最高組別）</option>`;
+  } else {
+    overrideWrap.style.display = 'block';
+    const defaultOpt = `<option value="${g}:0">依積分分配（${GROUP_LABELS[g]}，不加分）</option>`;
+    const upgradeOpts = higherGroups.map((tg, i) => {
+      const bonus = (i + 1) * 10;
+      return `<option value="${tg}:${bonus}">挑戰 ${GROUP_LABELS[tg]}（+${bonus} 分起始）</option>`;
+    });
+    overrideSel.innerHTML = defaultOpt + upgradeOpts.join('');
+    overrideSel.value = overrideSel.options[0].value; // 預設不越級
+    updateChallengHint();
+  }
+}
+
+function updateChallengHint() {
+  const sel = document.getElementById('reg-override');
+  const hintEl = document.getElementById('challenge-hint');
+  if (!sel || !hintEl) return;
+
+  const [targetGroup, bonusStr] = (sel.value || ':').split(':');
+  const bonus = parseInt(bonusStr) || 0;
+
+  if (bonus === 0) {
+    hintEl.style.display = 'none';
+    return;
+  }
+
+  const taskText = GROUP_TASKS[targetGroup] || '';
+  const colorMap = GROUP_COLORS;
+  const color = colorMap[targetGroup] || 'var(--gold)';
+
+  hintEl.style.display = 'block';
+  hintEl.innerHTML =
+    `<strong style="color:${color}">${targetGroup}</strong> 的挑戰規則：<br>` +
+    `${taskText}<br>` +
+    `<span style="color:var(--gold);font-weight:600">起始加 ${bonus} 分</span>，` +
+    `裁判記錄的最終得分已包含這 ${bonus} 分。`;
 }
 
 async function loadRegisterEvents() {
@@ -748,7 +812,12 @@ async function submitReg() {
   const phone = document.getElementById('reg-phone').value.trim();
   const score = parseInt(document.getElementById('reg-score').value);
   const evId  = document.getElementById('reg-event').value;
-  const over  = parseInt(document.getElementById('reg-override').value) || 0;
+  // 讀取挑戰組別與加分
+  const overrideVal = document.getElementById('reg-override').value || '';
+  const [challengeGroup, bonusStr] = overrideVal.split(':');
+  const overBonus = parseInt(bonusStr) || 0;
+  const myGroup   = groupFromScore(score);
+
   if (!name || !phone || !score || !evId) {
     toast('請填寫所有必填欄位並選擇場次', 'err'); return;
   }
@@ -758,8 +827,11 @@ async function submitReg() {
     const res = await apiPost({
       action: 'register',
       email: currentUser.email, name, phone,
-      rating: score, group: groupFromScore(score),
-      eventId: evId, override: over
+      rating: score,
+      group: myGroup,
+      challengeGroup: challengeGroup || myGroup,
+      override: overBonus,
+      eventId: evId
     });
     if (res.success) {
       savePlayerLocal();
@@ -867,7 +939,7 @@ async function loadJudgeData() {
   }
 }
 
-async function doCreateEvent() {
+async function createEvent() {
   const name = document.getElementById('ev-name').value.trim();
   const date = document.getElementById('ev-date').value;
   const time = document.getElementById('ev-time').value;
