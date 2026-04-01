@@ -241,10 +241,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
         登入
       </button>
     </div>
-    <div id="nav-user" style="display:none">
-      <div class="user-badge">
+    <div id="nav-user" style="display:none;position:relative">
+      <div class="user-badge" onclick="toggleUserMenu()" style="cursor:pointer;padding:.3rem .5rem;border-radius:8px;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.06)'" onmouseout="this.style.background='transparent'">
         <div class="user-avatar" id="nav-avatar">?</div>
         <span id="nav-name"></span>
+        <span style="font-size:.65rem;color:var(--muted);margin-left:.25rem">▾</span>
+      </div>
+      <!-- 下拉選單 -->
+      <div id="user-menu" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:var(--bg3);border:1px solid var(--border);border-radius:12px;min-width:220px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:200">
+        <div style="padding:.85rem 1rem;border-bottom:1px solid var(--border)">
+          <div style="font-family:var(--fc);font-size:.7rem;letter-spacing:1px;color:var(--muted);margin-bottom:.2rem">已登入</div>
+          <div id="menu-email" style="font-size:.85rem;color:var(--text);word-break:break-all"></div>
+        </div>
+        <button onclick="switchAccount()" style="width:100%;text-align:left;padding:.8rem 1rem;background:none;border:none;color:var(--text);font-family:var(--fc);font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:.6rem;transition:background .2s" onmouseover="this.style.background='rgba(255,255,255,.05)'" onmouseout="this.style.background='none'">
+          <span style="font-size:1rem">🔄</span> 切換帳號
+        </button>
+        <button onclick="globalLogout()" style="width:100%;text-align:left;padding:.8rem 1rem;background:none;border:none;color:var(--danger);font-family:var(--fc);font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:.6rem;transition:background .2s" onmouseover="this.style.background='rgba(255,77,77,.06)'" onmouseout="this.style.background='none'">
+          <span style="font-size:1rem">🚪</span> 登出
+        </button>
       </div>
     </div>
   </div>
@@ -353,16 +367,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
     <div class="reg-wrap">
       <div>
         <div class="form-card">
-          <div class="login-box" id="reg-login-box">
-            <p>報名前請先輸入您的 Gmail</p>
-            <button class="btn btn-outline" onclick="doLogin()" style="margin:0 auto">
-              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-              輸入 Gmail 登入
-            </button>
+          <!-- 未登入提示 -->
+          <div id="reg-not-logged-bar" style="display:flex;align-items:flex-start;gap:.75rem;background:rgba(255,184,0,.05);border:1px solid var(--border-gold);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem">
+            <span style="font-size:1.1rem;flex-shrink:0">⚠️</span>
+            <div>
+              <div style="font-family:var(--fc);font-size:.9rem;font-weight:600;color:var(--gold);margin-bottom:.2rem">尚未登入</div>
+              <div style="font-size:.85rem;color:var(--muted);line-height:1.6">請點右上角「登入」按鈕輸入 Gmail，登入後才能完成報名，且歷史資料會自動帶入。</div>
+            </div>
           </div>
-          <div class="login-ok" id="reg-login-ok" style="display:none">
-            <span class="ck">✓</span>
-            <span>已登入：<strong id="reg-email-display"></strong></span>
+          <!-- 已登入狀態 -->
+          <div id="reg-logged-in-bar" style="display:none;align-items:center;gap:.75rem;padding:.75rem 1rem;background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:10px;margin-bottom:1.25rem">
+            <span style="color:var(--green);font-size:1.1rem">✓</span>
+            <span style="font-size:.9rem">已登入：<strong id="reg-email-display"></strong></span>
+            <button onclick="switchAccount()" style="margin-left:auto;font-family:var(--fc);font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:.2rem .5rem;border-radius:4px" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">切換帳號</button>
           </div>
           <div class="form-title">📝 基本資料</div>
           <div class="fg"><label class="fl">姓名</label><input class="fi" type="text" placeholder="請輸入真實姓名" id="reg-name"></div>
@@ -409,7 +426,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
         <div class="info-card">
           <div style="font-family:var(--fc);font-size:.8rem;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:1.25rem">HOW IT WORKS</div>
           <div class="info-step"><div class="step-n">1</div><div class="step-c"><h4>輸入 Gmail</h4><p>輸入您的 Gmail 帳號，作為報名識別。</p></div></div>
-          <div class="info-step"><div class="step-n">2</div><div class="step-c"><h4>填寫基本資料</h4><p>輸入姓名與目前積分。積分請如實填寫，系統依此自動分組。</p></div></div>
+          <div class="info-step"><div class="step-n">2</div><div class="step-c"><h4>填寫基本資料</h4><p>輸入姓名、電話與目前積分。積分請如實填寫，系統依此分組。</p></div></div>
           <div class="info-step"><div class="step-n">3</div><div class="step-c"><h4>選擇場次</h4><p>選擇您方便的活動場次，可報名多場，每場需個別報名。</p></div></div>
           <div class="info-step"><div class="step-n">4</div><div class="step-c"><h4>比賽當天現場繳費</h4><p>向裁判報到後繳費，即可開始挑戰！</p></div></div>
           <div class="divider"></div>
@@ -483,11 +500,32 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
     <div class="judge-login-card">
       <div class="judge-icon">⚖️</div>
       <div class="judge-title">裁判後台</div>
-      <p class="judge-sub">此頁面僅限授權裁判使用<br>請輸入已授權的裁判 Gmail</p>
-      <button class="btn btn-red" style="width:100%;justify-content:center;margin-bottom:1rem" onclick="judgeLogin()">
-        <svg width="16" height="16" viewBox="0 0 24 24" style="fill:white"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        裁判登入
-      </button>
+
+      <!-- 已登入：一鍵驗證 -->
+      <div id="judge-auto-login" style="display:none;margin-bottom:1.25rem">
+        <div style="background:rgba(255,184,0,.06);border:1px solid var(--border-gold);border-radius:10px;padding:.85rem 1rem;margin-bottom:1rem;text-align:left">
+          <div style="font-family:var(--fc);font-size:.75rem;letter-spacing:1px;color:var(--muted);margin-bottom:.25rem">目前登入帳號</div>
+          <div id="judge-current-email" style="font-size:.9rem;color:var(--text);font-weight:600"></div>
+        </div>
+        <button class="btn btn-red" style="width:100%;justify-content:center;margin-bottom:.6rem" onclick="judgeLogin()">
+          ✓ 以此帳號進入裁判後台
+        </button>
+        <button onclick="switchAccount()" style="width:100%;background:none;border:1px solid var(--border);color:var(--muted);font-family:var(--fc);font-size:.85rem;padding:.5rem;border-radius:8px;cursor:pointer" onmouseover="this.style.borderColor='var(--border-gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+          切換其他帳號
+        </button>
+      </div>
+
+      <!-- 未登入：提示去右上角登入 -->
+      <div id="judge-not-logged" style="margin-bottom:1.25rem">
+        <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;margin-bottom:1rem;font-size:.85rem;color:var(--muted);line-height:1.7;text-align:left">
+          請先點右上角「登入」輸入 Gmail，<br>登入後回到此頁面即可一鍵進入後台。
+        </div>
+        <button class="btn btn-red" style="width:100%;justify-content:center" onclick="judgeLogin()">
+          <svg width="14" height="14" viewBox="0 0 24 24" style="fill:white"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          輸入信箱直接登入
+        </button>
+      </div>
+
       <p style="font-size:.8rem;color:var(--muted)">如需裁判權限，請聯繫主辦單位</p>
     </div>
   </div>
@@ -631,33 +669,136 @@ function showPage(id, el) {
   if (id === 'events')      renderEvents();
   if (id === 'leaderboard') renderLeaderboard();
   if (id === 'register')    loadRegisterEvents();
+  if (id === 'judge')       updateRegPageState(); // 進入裁判後台時更新狀態
 }
 
 // ══════════════════════════════════════════════════════
 // 登入（簡易輸入 Gmail）
 // ══════════════════════════════════════════════════════
 function doLogin() {
-  const email = prompt('請輸入您的 Gmail：', '');
+  globalLogin();
+}
+
+async function globalLogin() {
+  const email = prompt('請輸入您的 Gmail：', currentUser?.email || '');
   if (!email || !email.includes('@')) {
     toast('請輸入有效的 Gmail', 'err');
     return;
   }
-  setUser(email);
+  setUser(email.trim().toLowerCase());
+  await autoFillFromHistory();
 }
+
+function globalLogout() {
+  currentUser = null;
+  localStorage.removeItem('squash_player');
+  document.getElementById('nav-login').style.display = 'flex';
+  document.getElementById('nav-user').style.display = 'none';
+  closeUserMenu();
+  updateRegPageState();
+  ['reg-name','reg-score'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const gh = document.getElementById('group-hint');
+  const ow = document.getElementById('override-wrap');
+  if (gh) gh.style.display = 'none';
+  if (ow) ow.style.display = 'none';
+  toast('已登出', 'ok');
+}
+
+function switchAccount() {
+  closeUserMenu();
+  const email = prompt('請輸入要切換的 Gmail：', '');
+  if (!email || !email.includes('@')) return;
+  setUser(email.trim().toLowerCase());
+  autoFillFromHistory();
+  toast('已切換至：' + email, 'ok');
+}
+
+function toggleUserMenu() {
+  const menu = document.getElementById('user-menu');
+  if (!menu) return;
+  const isOpen = menu.style.display === 'block';
+  menu.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen && currentUser) {
+    const el = document.getElementById('menu-email');
+    if (el) el.textContent = currentUser.email;
+  }
+}
+
+function closeUserMenu() {
+  const menu = document.getElementById('user-menu');
+  if (menu) menu.style.display = 'none';
+}
+
+document.addEventListener('click', function(e) {
+  const nu = document.getElementById('nav-user');
+  if (nu && !nu.contains(e.target)) closeUserMenu();
+});
 
 function setUser(email) {
   const name = email.split('@')[0];
   currentUser = { email, name, initial: name[0].toUpperCase() };
-  // 更新導覽列
   document.getElementById('nav-login').style.display = 'none';
   document.getElementById('nav-user').style.display = 'flex';
   document.getElementById('nav-avatar').textContent = currentUser.initial;
-  document.getElementById('nav-name').textContent = currentUser.name;
-  // 更新報名頁
-  document.getElementById('reg-login-box').style.display = 'none';
-  document.getElementById('reg-login-ok').style.display = 'flex';
-  document.getElementById('reg-email-display').textContent = email;
-  toast('已登入：' + email, 'ok');
+  document.getElementById('nav-name').textContent = name;
+  const menuEmail = document.getElementById('menu-email');
+  if (menuEmail) menuEmail.textContent = email;
+  updateRegPageState();
+  const d = JSON.parse(localStorage.getItem('squash_player') || '{}');
+  d.email = email;
+  localStorage.setItem('squash_player', JSON.stringify(d));
+}
+
+function updateRegPageState() {
+  const loggedIn = !!currentUser;
+  // 報名頁
+  const notBar = document.getElementById('reg-not-logged-bar');
+  const yesBar = document.getElementById('reg-logged-in-bar');
+  if (notBar) notBar.style.display = loggedIn ? 'none' : 'flex';
+  if (yesBar) yesBar.style.display = loggedIn ? 'flex' : 'none';
+  const emailDisplay = document.getElementById('reg-email-display');
+  if (emailDisplay && currentUser) emailDisplay.textContent = currentUser.email;
+  // 裁判後台登入畫面
+  const judgeAuto   = document.getElementById('judge-auto-login');
+  const judgeManual = document.getElementById('judge-not-logged');
+  const judgeCurEmail = document.getElementById('judge-current-email');
+  if (judgeAuto)   judgeAuto.style.display   = loggedIn ? 'block' : 'none';
+  if (judgeManual) judgeManual.style.display  = loggedIn ? 'none'  : 'block';
+  if (judgeCurEmail && currentUser) judgeCurEmail.textContent = currentUser.email;
+}
+
+async function autoFillFromHistory() {
+  if (!currentUser) return;
+  const email = currentUser.email;
+  // localStorage 快速填入
+  try {
+    const d = JSON.parse(localStorage.getItem('squash_player') || '{}');
+    if (d.email && d.email.toLowerCase() === email) {
+      if (d.name)  { const el = document.getElementById('reg-name');  if (el) el.value = d.name; }
+      if (d.score) { const el = document.getElementById('reg-score'); if (el) { el.value = d.score; updateGroupHint(d.score); } }
+    }
+  } catch(e) {}
+  // Sheets 查詢
+  try {
+    const players = await apiGet({ action: 'getRegistrations', eventId: '' });
+    if (!Array.isArray(players)) return;
+    const me = players.find(p => (p.email || '').toLowerCase() === email);
+    if (me) {
+      if (me.name)   { const el = document.getElementById('reg-name');  if (el) el.value = me.name; }
+      if (me.rating) { const el = document.getElementById('reg-score'); if (el) { el.value = String(me.rating); updateGroupHint(String(me.rating)); } }
+      // 同步回 localStorage，下次載入更快
+      const d = JSON.parse(localStorage.getItem('squash_player') || '{}');
+      if (me.name)   d.name  = me.name;
+      if (me.rating) d.score = String(me.rating);
+      localStorage.setItem('squash_player', JSON.stringify(d));
+      if (me.name || me.rating) toast('✓ 已自動帶入您的報名資料', 'ok');
+    } else {
+      // Sheets 查無記錄，靜默不打擾
+    }
+  } catch(e) {}
 }
 
 // ══════════════════════════════════════════════════════
@@ -806,7 +947,7 @@ async function submitReg() {
   const challengeGroup = overParts[0] || groupFromScore(parseInt(document.getElementById('reg-score').value));
   const overBonus = parseInt(overParts[1]) || 0;
   if (!name || !score || !evId) {
-    toast('請填寫姓名、積分並選擇場次', 'err'); return;
+    toast('請填寫所有必填欄位並選擇場次', 'err'); return;
   }
   const btn = document.getElementById('reg-btn');
   btn.disabled = true; btn.textContent = '送出中...';
@@ -873,8 +1014,14 @@ async function renderLeaderboard() {
 // 裁判後台
 // ══════════════════════════════════════════════════════
 async function judgeLogin() {
-  const email = prompt('請輸入裁判 Gmail：', '');
-  if (!email || !email.includes('@')) return;
+  // 優先使用已登入帳號，否則才要求輸入
+  let email = currentUser?.email || '';
+  if (!email) {
+    email = prompt('請輸入裁判 Gmail：', '');
+    if (!email || !email.includes('@')) return;
+    email = email.trim().toLowerCase();
+  }
+  toast('驗證中...', '');
   try {
     const res = await apiGet({ action: 'checkJudge', email });
     if (res.isJudge) {
@@ -882,10 +1029,10 @@ async function judgeLogin() {
       document.getElementById('judge-login-wrap').style.display = 'none';
       document.getElementById('judge-panel-content').classList.add('active');
       document.getElementById('judge-email-display').textContent = email;
-      toast('裁判登入成功 ✓', 'ok');
+      toast('裁判登入成功 ✓ — ' + email, 'ok');
       loadJudgeData();
     } else {
-      toast('此帳號沒有裁判權限，請聯繫主辦單位', 'err');
+      toast('此帳號（' + email + '）沒有裁判權限', 'err');
     }
   } catch(e) {
     console.error(e);
@@ -1121,7 +1268,19 @@ function loadPlayerLocal() {
 
 // 頁面載入後自動填入
 window.addEventListener('DOMContentLoaded', () => {
-  loadPlayerLocal();
+  try {
+    const d = JSON.parse(localStorage.getItem('squash_player') || '{}');
+    if (d.email) {
+      setUser(d.email);
+      // 先從 localStorage 快速填入
+      if (d.name)  { const el = document.getElementById('reg-name');  if (el) el.value = d.name; }
+      if (d.score) { const el = document.getElementById('reg-score'); if (el) { el.value = d.score; updateGroupHint(d.score); } }
+      // 再從 Sheets 查詢最新資料（非同步，不擋頁面）
+      autoFillFromHistory();
+    } else {
+      updateRegPageState();
+    }
+  } catch(e) { updateRegPageState(); }
 });
 </script>
 </body>
