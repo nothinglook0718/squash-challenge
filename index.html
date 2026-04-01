@@ -262,7 +262,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
         <button class="btn btn-gold" onclick="showPage('register',document.querySelector('.nav-links a:nth-child(4)'))">立即報名 →</button>
         <button class="btn btn-outline" onclick="showPage('rules',document.querySelector('.nav-links a:nth-child(2)'))">了解規則</button>
       </div>
-      <a href="https://www.youtube.com/shorts/PYMyKXiCbFY" target="_blank"
+      <a href="https://www.youtube.com/shorts/9FRSKwdgNlI" target="_blank"
          style="display:inline-flex;align-items:center;gap:.65rem;border:1px solid rgba(255,255,255,.1);color:var(--muted);padding:.5rem 1.25rem .5rem .5rem;border-radius:100px;font-family:var(--fc);font-size:.88rem;font-weight:600;letter-spacing:.5px;cursor:pointer;transition:all .25s;text-decoration:none;margin-top:1rem"
          onmouseover="this.style.borderColor='var(--border-gold)';this.style.color='var(--gold)';this.style.background='rgba(255,184,0,.06)'"
          onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='var(--muted)';this.style.background='transparent'">
@@ -353,25 +353,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
     <div class="reg-wrap">
       <div>
         <div class="form-card">
-          <!-- Step 1: 輸入信箱 -->
-          <div class="form-title">📧 輸入您的 Gmail</div>
-          <div class="fg">
-            <div style="display:flex;gap:.5rem">
-              <input class="fi" type="email" placeholder="yourname@gmail.com" id="reg-email-input" style="flex:1"
-                onkeydown="if(event.key==='Enter') confirmEmail()">
-              <button class="btn btn-gold btn-sm" onclick="confirmEmail()" id="email-confirm-btn" style="flex-shrink:0;white-space:nowrap">
-                確認
-              </button>
-            </div>
-            <div id="email-status" style="display:none;margin-top:.5rem;font-size:.82rem;font-family:var(--fc);border-radius:8px;padding:.6rem .85rem"></div>
+          <div class="login-box" id="reg-login-box">
+            <p>報名前請先輸入您的 Gmail</p>
+            <button class="btn btn-outline" onclick="doLogin()" style="margin:0 auto">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+              輸入 Gmail 登入
+            </button>
           </div>
-
-          <!-- Step 2: 基本資料（確認信箱後顯示） -->
-          <div id="reg-fields" style="display:none">
-            <div class="divider" style="margin:.75rem 0 1.25rem"></div>
-            <div class="form-title">📝 基本資料</div>
-            <div class="fg"><label class="fl">姓名</label><input class="fi" type="text" placeholder="請輸入真實姓名" id="reg-name"></div>
-            <div class="fg"><label class="fl">聯絡電話</label><input class="fi" type="tel" placeholder="09XX-XXX-XXX" id="reg-phone"></div>
+          <div class="login-ok" id="reg-login-ok" style="display:none">
+            <span class="ck">✓</span>
+            <span>已登入：<strong id="reg-email-display"></strong></span>
+          </div>
+          <div class="form-title">📝 基本資料</div>
+          <div class="fg"><label class="fl">姓名</label><input class="fi" type="text" placeholder="請輸入真實姓名" id="reg-name"></div>
           <div class="fg">
             <label class="fl" style="display:flex;align-items:center;justify-content:space-between">
               <span>目前積分（請如實填寫）</span>
@@ -395,11 +389,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
               <span style="font-size:.78rem;opacity:.7">（可越級挑戰，每高一組起始加10分）</span>
             </div>
           </div>
-          </div><!-- end reg-fields -->
-
-          <!-- Step 3: 場次（確認信箱後顯示） -->
-          <div id="reg-event-section" style="display:none">
-          <div class="divider" style="margin:.75rem 0 1.25rem"></div>
+          <div class="divider"></div>
           <div class="form-title">🎯 選擇活動場次</div>
           <div class="fg"><label class="fl">活動場次</label><select class="fs" id="reg-event"><option value="">— 載入中 —</option></select></div>
           <div class="fg" id="override-wrap" style="display:none">
@@ -413,14 +403,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,7,13,.9);b
           </div>
           <button class="btn btn-gold" id="reg-btn" style="width:100%;justify-content:center;margin-top:.5rem" onclick="submitReg()">確認報名 →</button>
           <p style="font-size:.8rem;color:var(--muted);text-align:center;margin-top:.75rem">報名後請於比賽當天現場繳費，每次挑戰費用請洽主辦單位</p>
-          </div><!-- end reg-event-section -->
         </div>
       </div>
       <div>
         <div class="info-card">
           <div style="font-family:var(--fc);font-size:.8rem;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:1.25rem">HOW IT WORKS</div>
           <div class="info-step"><div class="step-n">1</div><div class="step-c"><h4>輸入 Gmail</h4><p>輸入您的 Gmail 帳號，作為報名識別。</p></div></div>
-          <div class="info-step"><div class="step-n">2</div><div class="step-c"><h4>填寫基本資料</h4><p>輸入姓名、電話與目前積分。積分請如實填寫，系統依此分組。</p></div></div>
+          <div class="info-step"><div class="step-n">2</div><div class="step-c"><h4>填寫基本資料</h4><p>輸入姓名與目前積分。積分請如實填寫，系統依此自動分組。</p></div></div>
           <div class="info-step"><div class="step-n">3</div><div class="step-c"><h4>選擇場次</h4><p>選擇您方便的活動場次，可報名多場，每場需個別報名。</p></div></div>
           <div class="info-step"><div class="step-n">4</div><div class="step-c"><h4>比賽當天現場繳費</h4><p>向裁判報到後繳費，即可開始挑戰！</p></div></div>
           <div class="divider"></div>
@@ -647,100 +636,7 @@ function showPage(id, el) {
 // ══════════════════════════════════════════════════════
 // 登入（簡易輸入 Gmail）
 // ══════════════════════════════════════════════════════
-// ══════════════════════════════════════════════════════
-// 信箱確認 + 自動帶入資料
-// ══════════════════════════════════════════════════════
-async function confirmEmail() {
-  const emailInput = document.getElementById('reg-email-input');
-  const email = (emailInput.value || '').trim().toLowerCase();
-  if (!email || !email.includes('@') || !email.includes('.')) {
-    toast('請輸入有效的 Gmail 地址', 'err');
-    emailInput.focus();
-    return;
-  }
-
-  const btn = document.getElementById('email-confirm-btn');
-  const statusEl = document.getElementById('email-status');
-  btn.disabled = true;
-  btn.textContent = '查詢中...';
-  statusEl.style.display = 'none';
-
-  // 設定使用者（先讓導覽列顯示）
-  setUser(email);
-
-  // 向 Sheets 查詢此信箱是否有過報名記錄
-  try {
-    const players = await apiGet({ action: 'getRegistrations', eventId: '' });
-    const me = Array.isArray(players)
-      ? players.find(p => (p.email || '').toLowerCase() === email)
-      : null;
-
-    showRegFields();
-
-    if (me) {
-      // 有記錄 → 自動填入
-      if (me.name)   document.getElementById('reg-name').value  = me.name;
-      if (me.phone)  document.getElementById('reg-phone').value = me.phone;
-      if (me.rating) {
-        document.getElementById('reg-score').value = me.rating;
-        updateGroupHint(me.rating);
-      }
-      statusEl.style.display = 'block';
-      statusEl.style.background = 'rgba(0,230,118,.08)';
-      statusEl.style.border = '1px solid rgba(0,230,118,.25)';
-      statusEl.style.color = 'var(--green)';
-      statusEl.innerHTML = '✓ 找到你的報名記錄，資料已自動帶入，請確認後選擇場次';
-    } else {
-      // 新選手
-      statusEl.style.display = 'block';
-      statusEl.style.background = 'rgba(255,184,0,.06)';
-      statusEl.style.border = '1px solid var(--border-gold)';
-      statusEl.style.color = 'var(--muted)';
-      statusEl.innerHTML = '👋 歡迎新選手！請填寫下方基本資料';
-    }
-  } catch(e) {
-    // API 失敗 → 仍可繼續（用 localStorage fallback）
-    showRegFields();
-    loadPlayerLocalFallback(email);
-    statusEl.style.display = 'block';
-    statusEl.style.background = 'rgba(255,255,255,.03)';
-    statusEl.style.border = '1px solid var(--border)';
-    statusEl.style.color = 'var(--muted)';
-    statusEl.textContent = '無法連線查詢，請手動填寫資料';
-  }
-
-  btn.disabled = false;
-  btn.textContent = '重新輸入';
-  btn.onclick = resetEmail;
-}
-
-function showRegFields() {
-  document.getElementById('reg-fields').style.display = 'block';
-  document.getElementById('reg-event-section').style.display = 'block';
-  document.getElementById('reg-email-input').disabled = true;
-}
-
-function resetEmail() {
-  document.getElementById('reg-email-input').disabled = false;
-  document.getElementById('reg-email-input').value = '';
-  document.getElementById('reg-fields').style.display = 'none';
-  document.getElementById('reg-event-section').style.display = 'none';
-  document.getElementById('email-status').style.display = 'none';
-  document.getElementById('email-confirm-btn').textContent = '確認';
-  document.getElementById('email-confirm-btn').onclick = confirmEmail;
-  document.getElementById('reg-name').value = '';
-  document.getElementById('reg-phone').value = '';
-  document.getElementById('reg-score').value = '';
-  document.getElementById('group-hint').style.display = 'none';
-  document.getElementById('override-wrap').style.display = 'none';
-  document.getElementById('reg-email-input').focus();
-  currentUser = null;
-  document.getElementById('nav-login').style.display = 'flex';
-  document.getElementById('nav-user').style.display = 'none';
-}
-
 function doLogin() {
-  // 裁判後台登入仍使用 prompt
   const email = prompt('請輸入您的 Gmail：', '');
   if (!email || !email.includes('@')) {
     toast('請輸入有效的 Gmail', 'err');
@@ -752,22 +648,16 @@ function doLogin() {
 function setUser(email) {
   const name = email.split('@')[0];
   currentUser = { email, name, initial: name[0].toUpperCase() };
+  // 更新導覽列
   document.getElementById('nav-login').style.display = 'none';
   document.getElementById('nav-user').style.display = 'flex';
   document.getElementById('nav-avatar').textContent = currentUser.initial;
   document.getElementById('nav-name').textContent = currentUser.name;
-}
-
-// localStorage fallback（網路不通時）
-function loadPlayerLocalFallback(email) {
-  try {
-    const d = JSON.parse(localStorage.getItem('squash_player') || '{}');
-    if (d.email && d.email.toLowerCase() === email.toLowerCase()) {
-      if (d.name)  document.getElementById('reg-name').value  = d.name;
-      if (d.phone) document.getElementById('reg-phone').value = d.phone;
-      if (d.score) { document.getElementById('reg-score').value = d.score; updateGroupHint(d.score); }
-    }
-  } catch(e) {}
+  // 更新報名頁
+  document.getElementById('reg-login-box').style.display = 'none';
+  document.getElementById('reg-login-ok').style.display = 'flex';
+  document.getElementById('reg-email-display').textContent = email;
+  toast('已登入：' + email, 'ok');
 }
 
 // ══════════════════════════════════════════════════════
@@ -907,24 +797,23 @@ async function loadRegisterEvents() {
 }
 
 async function submitReg() {
-  if (!currentUser) { toast('請先輸入並確認您的 Gmail', 'err'); return; }
+  if (!currentUser) { toast('請先輸入 Gmail 登入', 'err'); return; }
   const name  = document.getElementById('reg-name').value.trim();
-  const phone = document.getElementById('reg-phone').value.trim();
   const score = parseInt(document.getElementById('reg-score').value);
   const evId  = document.getElementById('reg-event').value;
   const overrideVal = document.getElementById('reg-override').value || '';
   const overParts = overrideVal.split(':');
   const challengeGroup = overParts[0] || groupFromScore(parseInt(document.getElementById('reg-score').value));
   const overBonus = parseInt(overParts[1]) || 0;
-  if (!name || !phone || !score || !evId) {
-    toast('請填寫所有必填欄位並選擇場次', 'err'); return;
+  if (!name || !score || !evId) {
+    toast('請填寫姓名、積分並選擇場次', 'err'); return;
   }
   const btn = document.getElementById('reg-btn');
   btn.disabled = true; btn.textContent = '送出中...';
   try {
     const res = await apiPost({
       action: 'register',
-      email: currentUser.email, name, phone,
+      email: currentUser.email, name,
       rating: score,
       group: groupFromScore(score),
       challengeGroup: challengeGroup,
@@ -1211,21 +1100,28 @@ function savePlayerLocal() {
   const d = {
     email: currentUser?.email || '',
     name:  (document.getElementById('reg-name')?.value  || '').trim(),
-    phone: (document.getElementById('reg-phone')?.value || '').trim(),
     score: (document.getElementById('reg-score')?.value || '').trim()
   };
-  if (d.email) localStorage.setItem('squash_player', JSON.stringify(d));
+  if (d.name || d.email) {
+    localStorage.setItem('squash_player', JSON.stringify(d));
+  }
 }
 
-// 頁面載入後，若有快取信箱自動填入 email 欄位（讓使用者一鍵確認）
-window.addEventListener('DOMContentLoaded', () => {
+function loadPlayerLocal() {
   try {
     const d = JSON.parse(localStorage.getItem('squash_player') || '{}');
-    if (d.email) {
-      const emailInput = document.getElementById('reg-email-input');
-      if (emailInput) emailInput.value = d.email;
+    if (d.email) setUser(d.email);
+    if (d.name)  { const el = document.getElementById('reg-name');  if (el) el.value = d.name; }
+    if (d.score) {
+      const el = document.getElementById('reg-score');
+      if (el) { el.value = d.score; updateGroupHint(d.score); }
     }
   } catch(e) {}
+}
+
+// 頁面載入後自動填入
+window.addEventListener('DOMContentLoaded', () => {
+  loadPlayerLocal();
 });
 </script>
 </body>
